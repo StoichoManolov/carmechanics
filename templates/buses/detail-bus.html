@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="card-title text-center">Информация за Буса</h2>
+    <div class="card">
+      <div class="card-body">
+        <p class="text-center"><strong>Модел:</strong> {{ bus.model }}</p>
+        <p class="text-center"><strong>Номер:</strong> {{ bus.number }}</p>
+        <p class="text-center"><strong>Километри:</strong> {{ bus.km }}</p>
+        <!-- Add other fields as necessary -->
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <a href="#" class="btn btn-primary mr-2">Редактирай</a>
+      <a href="{% url 'bus_delete' bus.id %}" class="btn btn-danger">Изтрий</a>
+    </div>
+  </div>
+{% endblock %}

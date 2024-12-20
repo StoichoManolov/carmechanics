@@ -1,0 +1,16 @@
+{% extends 'index.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4 text-center">Добави нов бус!</h2>
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group text-center">
+        {{ form.as_p }} <!-- This will render each form field inside <p> tags -->
+      </div>
+
+      <button type="submit" class="btn btn-outline-primary">Submit</button>
+    </form>
+  </div>
+{% endblock %}

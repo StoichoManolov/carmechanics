@@ -1,0 +1,37 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Login</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.username.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {% if form.password.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.password.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Non-field errors -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors.0 }}
+            </div>
+        {% endif %}
+        <button type="submit" class="btn btn-outline-primary w-100" style="margin-right: 10px; width: 150px"
+        >Login</button>
+    </form>
+</div>
+{% endblock %}

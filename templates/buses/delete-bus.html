@@ -1,0 +1,13 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<body>
+  <h1>Delete Bus</h1>
+  <p>Are you sure you want to delete the bus: <strong>{{ bus.name }}</strong>?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Yes, delete</button>
+    <a href="{% url 'bus_list' %}">Cancel</a>
+  </form>
+</body>
+{% endblock %}
