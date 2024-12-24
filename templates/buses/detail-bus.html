@@ -13,7 +13,7 @@
     </div>
 
     <div class="mt-4">
-      <a href="#" class="btn btn-primary mr-2">Редактирай</a>
+      <a href="{% url 'bus_edit' bus.id %}" class="btn btn-primary mr-2">Редактирай</a>
       <a href="{% url 'bus_delete' bus.id %}" class="btn btn-danger">Изтрий</a>
     </div>
   </div>

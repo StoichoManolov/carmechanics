@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Редактиране на Бус</h2>
+    
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Редактиране на Информация за Буса</h5>
+
+          <!-- Render the form fields with Bootstrap styling -->
+          {{ form }}
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary mt-3">Запази Промените</button>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

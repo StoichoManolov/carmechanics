@@ -22,5 +22,6 @@ from CarMechanic import accounts
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('CarMechanic.accounts.urls')),
-    path('bus/', include('CarMechanic.buses.urls'))
+    path('bus/', include('CarMechanic.buses.urls')),
+    path('repair/', include('CarMechanic.docxgeneration.urls'))
 ]

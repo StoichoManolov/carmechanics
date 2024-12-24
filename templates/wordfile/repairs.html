@@ -1,0 +1,67 @@
+{% extends 'index.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h2 class="mb-4 text-center">Генериране на Word файл</h2>
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="brand">Марка:</label>
+        <input type="text" id="brand" name="brand" class="form-control" placeholder="Въведете марка">
+      </div>
+
+      <div class="form-group">
+        <label for="number">Номер:</label>
+        <input type="text" id="number" name="number" class="form-control" placeholder="Въведете номер">
+      </div>
+
+      <div class="form-group">
+        <label for="kilometers">Километри:</label>
+        <input type="text" id="kilometers" name="kilometers" class="form-control" placeholder="Въведете километри">
+      </div>
+
+      <div class="form-group">
+        <label for="dynamic_inputs">Извършени ремонти:</label>
+        <div id="dynamic-inputs">
+          <div class="input-group mb-2">
+            <input type="text" name="text_input_1" class="form-control" placeholder="Описание">
+            <input type="number" name="text_input_space_1" class="form-control ml-2" placeholder="Сума (лв)">
+            <button type="button" class="btn btn-outline-danger ml-2 remove-field">X</button>
+          </div>
+        </div>
+        <button type="button" id="add-field" class="btn btn-outline-secondary mt-2">Добави ново поле</button>
+      </div>
+
+      <div class="form-group text-center">
+        <button type="submit" class="btn btn-outline-primary">Генерирай</button>
+      </div>
+    </form>
+
+    {% if success_message %}
+      <div class="alert alert-success mt-4 text-center">
+        {{ success_message }}
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    document.getElementById('add-field').addEventListener('click', function () {
+      const dynamicInputs = document.getElementById('dynamic-inputs');
+      const index = dynamicInputs.children.length + 1;
+      const newField = `
+        <div class="input-group mb-2">
+          <input type="text" name="text_input_${index}" class="form-control" placeholder="Описание">
+          <input type="number" name="text_input_space_${index}" class="form-control ml-2" placeholder="Сума (лв)">
+          <button type="button" class="btn btn-outline-danger ml-2 remove-field">X</button>
+        </div>`;
+      dynamicInputs.insertAdjacentHTML('beforeend', newField);
+    });
+
+    document.getElementById('dynamic-inputs').addEventListener('click', function (e) {
+      if (e.target.classList.contains('remove-field')) {
+        e.target.parentElement.remove();
+      }
+    });
+  </script>
+{% endblock %}

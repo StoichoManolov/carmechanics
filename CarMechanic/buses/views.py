@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DeleteView, DetailView
+from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
 
 from CarMechanic.buses.forms import BusForm
 from CarMechanic.buses.models import Bus
@@ -35,3 +35,15 @@ class BusDetailView(DetailView):
 
     model = Bus
     template_name = 'buses/detail-bus.html'
+
+
+class BusUpdateView(UpdateView):
+
+    model = Bus
+    template_name = 'buses/edit-bus.html'
+    form_class = BusForm
+
+    def get_success_url(self):
+        return reverse_lazy('bus_list')
+
+

@@ -21,15 +21,15 @@ class Bus(models.Model):
     )
 
 
-
 class Modifications(models.Model):
 
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
 
-    price = models.IntegerField()
+    date = models.DateField(null=True, blank=True)
 
     repair = models.CharField(max_length=200)
 
-    date = models.DateField(null=True, blank=True)
+    price = models.IntegerField()
+
 
 
