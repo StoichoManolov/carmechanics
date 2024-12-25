@@ -1,30 +1,39 @@
 {% extends "index.html" %}
 
 {% block content %}
-  <h2 class="text-center">Детайли за ремонта на {{ repair_session.bus.model }} - {{ repair_session.bus.number }}</h2>
+  <div class="container mt-4">
+    <h1 class="text-center mb-4">Детайли за ремонта на {{ repair_session.bus.model }} - {{ repair_session.bus.number }}</h1>
 
-  <h3 class="text-center">Дата: {{ repair_session.date|date:"d.m.Y" }} Километри: {{ repair_session.km }}</h3>
-  <p class="text-center"><strong>Цена:</strong> {{ repair_session.total_cost }} лв.</p>
-
-  <h4 class="text-center">Ремонт:</h4>
-  <div class="card-columns" style="text-align: center">
-    {% for mod in modifications %}
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title">{{ forloop.counter }}. {{ mod.repair }}</h5>
-          <p class="card-text"><strong>Цена:</strong> {{ mod.price }} лв.</p>
-        </div>
-      </div>
-    {% empty %}
-      <div class="card">
-        <div class="card-body">
-          <p class="card-text">No repairs were done in this session.</p>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
-    <div class="text-center" style="margin-top:10px">
-  <a href="{% url 'bus_repairs' repair_session.bus.id %}" class="btn btn-primary">Обратно към ремонти</a>
+    <div class="text-center mb-3">
+      <h3>Дата: {{ repair_session.date|date:"d.m.Y" }}</h3>
+      {% if repair_session.km %}
+        <h4>Километри: {{ repair_session.km }}</h4>
+      {% endif %}
+      <p><strong>Цена:</strong> {{ repair_session.total_cost }} лв.</p>
     </div>
 
+    <h4 class="text-center">Ремонт:</h4>
+    <div class="card-columns">
+      {% for mod in modifications %}
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h5 class="card-title">
+              {{ forloop.counter }}. {{ mod.repair }}
+              <span >  - {{ mod.price }} лв.</span>
+            </h5>
+          </div>
+        </div>
+      {% empty %}
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <p class="card-text">Няма извършени ремонти в тази сесия.</p>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ referer }}" class="btn btn-primary">Обратно към ремонти</a>
+    </div>
+  </div>
 {% endblock %}

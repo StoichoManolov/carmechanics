@@ -8,13 +8,13 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('buses', '0003_rename_bus_modifications_session_and_more'),
-        ('docxgeneration', '0001_initial'),
+        ('repairs', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='modifications',
             name='session',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='modifications', to='docxgeneration.repairsession'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='modifications', to='repairs.repairsession'),
         ),
     ]

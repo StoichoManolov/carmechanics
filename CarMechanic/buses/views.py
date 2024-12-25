@@ -1,10 +1,11 @@
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
 
 from CarMechanic.buses.forms import BusForm
 from CarMechanic.buses.models import Bus, Modifications
-from CarMechanic.docxgeneration.models import RepairSession
+from CarMechanic.repairs.models import RepairSession
 from CarMechanic.mixins import CheckForRestriction
 
 
@@ -16,6 +17,19 @@ class BusListView(CheckForRestriction, ListView):
     model = Bus
     template_name = 'buses/bus-list.html'
     context_object_name = 'buses'
+    paginate_by = 12
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')  # Get the search query from the request
+        if query:
+            queryset = queryset.filter(Q(model__icontains=query) | Q(number__icontains=query))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('q', '')  # Add the search query to the context
+        return context
 
 
 class BusAddView(CheckForRestriction, CreateView):
@@ -87,10 +101,14 @@ class RepairDetailView(CheckForRestriction, DetailView):
         # Get the current `RepairSession` object
         repair_session = self.get_object()
 
-        # Add additional context for the session
-        context['repair_session'] = repair_session  # Add the repair session itself
-        context['bus'] = repair_session.bus  # Add the associated bus
-        context['modifications'] = repair_session.modifications.all()  # Add the related modifications (repairs)
+        # Add additional context
+        context['repair_session'] = repair_session
+        context['bus'] = repair_session.bus
+        context['modifications'] = repair_session.modifications.all()
+
+        # Add referer to the context
+        referer = self.request.META.get('HTTP_REFERER', None)
+        context['referer'] = referer if referer else reverse_lazy('bus_repairs', args=[repair_session.bus.id])
 
         return context
 

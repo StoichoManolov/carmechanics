@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 
     "CarMechanic.accounts.apps.AccountsConfig",
     "CarMechanic.buses.apps.BusesConfig",
-    "CarMechanic.docxgeneration.apps.DocxgenerationConfig"
+    "CarMechanic.repairs.apps.DocxgenerationConfig"
 ]
 
 MIDDLEWARE = [

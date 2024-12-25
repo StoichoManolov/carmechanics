@@ -12,7 +12,7 @@ from docx.shared import Pt, Inches, RGBColor
 import os
 
 from CarMechanic.buses.models import Bus, Modifications
-from CarMechanic.docxgeneration.models import RepairSession
+from CarMechanic.repairs.models import RepairSession
 
 
 @login_required
@@ -126,8 +126,8 @@ def generate_word_file(request):
 
         doc.save(docx_filepath)
 
-        return render(request, 'wordfile/repairs.html', {
+        return render(request, 'wordfile/../../templates/repairs/repairs.html', {
             'success_message': 'Генериран е WORD файл и данните са записани в базата!',
         })
 
-    return render(request, 'wordfile/repairs.html')
+    return render(request, 'wordfile/../../templates/repairs/repairs.html')

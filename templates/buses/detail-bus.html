@@ -3,7 +3,7 @@
 {% block content %}
   <div class="container mt-4">
     <h2 class="card-title text-center">Информация за Буса</h2>
-    <div class="card">
+    <div class="card text-center">
       <div class="card-body">
         <p class="text-center"><strong>Модел:</strong> {{ bus.model }}</p>
         <p class="text-center"><strong>Номер:</strong> {{ bus.number }}</p>
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div class="mt-4">
+    <div class="mt-4 text-center" >
       <a href="{% url 'bus_edit' bus.id %}" class="btn btn-primary mr-2">Редактирай</a>
       <a href="{% url 'bus_delete' bus.id %}" class="btn btn-danger">Изтрий</a>
     </div>

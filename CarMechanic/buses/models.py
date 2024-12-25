@@ -1,6 +1,6 @@
 from django.db import models
 
-from CarMechanic.docxgeneration.models import RepairSession
+from CarMechanic.repairs.models import RepairSession
 
 
 class Bus(models.Model):
