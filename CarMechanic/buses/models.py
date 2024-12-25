@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+from CarMechanic.docxgeneration.models import RepairSession
 
 
 class Bus(models.Model):
@@ -23,13 +23,12 @@ class Bus(models.Model):
 
 class Modifications(models.Model):
 
-    bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
-
-    date = models.DateField(null=True, blank=True)
+    session = models.ForeignKey(RepairSession, on_delete=models.CASCADE, related_name="modifications")
 
     repair = models.CharField(max_length=200)
 
     price = models.IntegerField()
+
 
 
 

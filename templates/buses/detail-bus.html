@@ -8,6 +8,7 @@
         <p class="text-center"><strong>Модел:</strong> {{ bus.model }}</p>
         <p class="text-center"><strong>Номер:</strong> {{ bus.number }}</p>
         <p class="text-center"><strong>Километри:</strong> {{ bus.km }}</p>
+          <a href="{% url 'bus_repairs' bus.id %}" class="btn btn-danger">Ремонти</a>
         <!-- Add other fields as necessary -->
       </div>
     </div>

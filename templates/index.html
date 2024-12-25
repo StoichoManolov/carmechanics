@@ -29,7 +29,7 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
+{% if request.user.is_superuser %}
     <!-- Collapsible Navbar -->
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="row w-100 align-items-center" style="margin-left: 0px">
@@ -50,26 +50,12 @@
             </li>
           </ul>
         </div>
+      {% endif %}
 
         <div class="col" style="padding-right:0px">
           <ul class="navbar-nav justify-content-end">
             {% if request.user.is_authenticated %}
-              <li class="nav-item">
-                <a class="btn btn-outline-dark fw-bold" style="margin-right: 5px;"
-                   href="{% url 'detail-account' pk=request.user.pk %}">
-                    <i class="bi bi-person-circle" style="font-size: large; margin-right: 5px"></i>
-                    {{ request.user.username }}</a>
-              </li>
-              <li class="nav-item">
-                  <form class="d-inline" id="logout-button" action="{% url 'logout-account' %}" method="post">
-                      {% csrf_token %}
-                      <button type="submit" class="btn btn-outline-danger fw-bold">
-                          <!-- Image before text -->
-                          <i class="bi bi-box-arrow-right" style="font-size: large; margin-right: 5px"></i>
-                          Logout
-                      </button>
-                  </form>
-              </li>
+                {{ user.name }}
             {% else %}
               <li class="nav-item">
                 <a class="btn btn-outline-danger fw-bold" style="margin-right: 5px;"

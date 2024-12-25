@@ -1,0 +1,62 @@
+{% extends "index.html" %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="text-center mb-4">Ремонти дейности на {{ bus.model }} - {{ bus.number }}</h1>
+
+    {% if repairs %}
+      <div class="card-columns">
+        {% for repair_session in repairs %}
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <h5 class="card-title">{{ forloop.counter }}. Извършен ремонт на {{ repair_session.date|date:"d.m.Y" }}</h5>
+              <p class="card-text"><strong>Цена:</strong> {{ repair_session.total_cost }} лв.
+                {% if repair_session.km %}
+                    <strong>Километри:</strong> {{ repair_session.km }}
+                {% endif %}
+            </p>
+              <a href="{% url 'repair_detail' repair_session.id %}" class="btn btn-primary">Детайли</a>
+            </div>
+          </div>
+        {% empty %}
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">Няма извършени ремонти за този автобус.</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination controls -->
+      {% if is_paginated %}
+        <div class="d-flex justify-content-center">
+          <nav>
+            <ul class="pagination">
+              {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="{% url 'bus_repairs' bus.id %}?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              {% endif %}
+
+              <li class="page-item disabled">
+                <span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+              </li>
+
+              {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="{% url 'bus_repairs' bus.id %}?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      {% endif %}
+    {% else %}
+      <p class="text-center">Няма извършени ремонти за този автобус.</p>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,32 +1,39 @@
-from django.shortcuts import render
+from decimal import Decimal
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.conf import settings
+from django.utils import timezone
 from django.utils.timezone import now
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt, Inches, RGBColor
 import os
 
-from CarMechanic.buses.models import Modifications, Bus
+from CarMechanic.buses.models import Bus, Modifications
+from CarMechanic.docxgeneration.models import RepairSession
 
 
+@login_required
 def generate_word_file(request):
     if request.method == 'POST':
         brand = request.POST.get('brand', '').strip()
         number = request.POST.get('number', '').strip()
         kilometers = request.POST.get('kilometers', '').strip()
+        date = request.POST.get('date', '').strip()
         dynamic_inputs = []
-        sum_inputs = 0
+        sum_inputs = Decimal(0)
 
         # Process dynamic inputs
         for key in request.POST:
             if key.startswith('text_input_'):
                 index = key.split('_')[-1]
                 text_value = request.POST.get(key, '').strip()
-                number_value = request.POST.get(f'text_input_space_{index}', '0').strip()
+                number_value = Decimal(request.POST.get(f'text_input_space_{index}', '0').strip() or '0')
                 if not text_value.isdigit():
-                    dynamic_inputs.append((text_value, int(number_value)))
-                    sum_inputs += int(number_value)
+                    dynamic_inputs.append((text_value, number_value))
+                    sum_inputs += number_value
 
         # Save data to the database
         try:
@@ -36,13 +43,23 @@ def generate_word_file(request):
                 defaults={'km': int(kilometers) if kilometers.isdigit() else None},
             )
 
+            if not date:
+                date = timezone.now()
+            # Create a repair session
+            repair_session = RepairSession.objects.create(bus=bus, total_cost=sum_inputs, date=date, km=kilometers)
+
+            if kilometers.isdigit():
+                kilometers = int(kilometers)
+                if bus.km is None:
+                    bus.km = kilometers
+                    bus.save()
+                elif bus.km < kilometers:
+                    bus.km = kilometers
+                    bus.save()
+
+                    # Add modifications to the session
             for repair, price in dynamic_inputs:
-                Modifications.objects.create(
-                    bus=bus,
-                    date=now().date(),
-                    repair=repair,
-                    price=price,
-                )
+                Modifications.objects.create(session=repair_session, repair=repair, price=price)
         except Exception as e:
             return JsonResponse({'message': f'Error saving to database: {e}'}, status=500)
 
