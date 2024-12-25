@@ -3,16 +3,16 @@
 {% block content %}
 <section id="list-page" class="list-page">
   <div class="container">
-    <h2 class="text-center my-4">Бусове</h2>
-    
+    <h2 class="text-center my-4">Бусове ({{ buses.count }})</h2>
+
     <!-- Search Form -->
     <form method="get" class="mb-4">
       <div class="input-group">
-        <input 
-          type="text" 
-          name="q" 
-          class="form-control" 
-          placeholder="Търсене по номер... " 
+        <input
+          type="text"
+          name="q"
+          class="form-control"
+          placeholder="Търсене по номер... "
           value="{{ search_query }}"
         >
         <div class="input-group-append">

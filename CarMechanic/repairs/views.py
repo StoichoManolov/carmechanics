@@ -1,17 +1,21 @@
+from datetime import datetime
 from decimal import Decimal
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.conf import settings
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.timezone import now
+from django.views.generic import ListView, DetailView
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt, Inches, RGBColor
 import os
 
 from CarMechanic.buses.models import Bus, Modifications
+from CarMechanic.mixins import CheckForRestriction
 from CarMechanic.repairs.models import RepairSession
 
 
@@ -21,7 +25,7 @@ def generate_word_file(request):
         brand = request.POST.get('brand', '').strip()
         number = request.POST.get('number', '').strip()
         kilometers = request.POST.get('kilometers', '').strip()
-        date = request.POST.get('date', '').strip()
+        date_str = request.POST.get('date', '').strip()
         dynamic_inputs = []
         sum_inputs = Decimal(0)
 
@@ -42,8 +46,14 @@ def generate_word_file(request):
                 number=number,
                 defaults={'km': int(kilometers) if kilometers.isdigit() else None},
             )
-
-            if not date:
+            if date_str:
+                try:
+                    # Try to parse the date in DD.MM.YYYY format
+                    date = datetime.strptime(date_str, '%Y-%m-%d')  # Django needs YYYY-MM-DD
+                except ValueError:
+                    # Handle the case where the date format is incorrect
+                    return JsonResponse({'message': 'Invalid date format. Please use DD.MM.YYYY.'}, status=400)
+            else:
                 date = timezone.now()
             # Create a repair session
             repair_session = RepairSession.objects.create(bus=bus, total_cost=sum_inputs, date=date, km=kilometers)
@@ -126,8 +136,58 @@ def generate_word_file(request):
 
         doc.save(docx_filepath)
 
-        return render(request, 'wordfile/../../templates/repairs/repairs.html', {
+        return render(request, 'repairs/repairs.html', {
             'success_message': 'Генериран е WORD файл и данните са записани в базата!',
         })
 
-    return render(request, 'wordfile/../../templates/repairs/repairs.html')
+    return render(request, 'repairs/repairs.html')
+
+
+class BusRepairListView(CheckForRestriction, ListView):
+    model = RepairSession
+    template_name = 'repairs/repair-list.html'
+    context_object_name = 'repairs'  # This will be used in the template
+    paginate_by = 5
+
+    def get_queryset(self):
+        # Get the bus by the ID passed in the URL
+        bus = get_object_or_404(Bus, pk=self.kwargs['bus_id'])
+
+        # Get all repair sessions for the bus
+        return RepairSession.objects.filter(bus=bus)
+
+    def get_context_data(self, **kwargs):
+        # Get the default context data
+        context = super().get_context_data(**kwargs)
+
+        # Get the bus object again for the context
+        bus = get_object_or_404(Bus, pk=self.kwargs['bus_id'])
+
+        # Add the bus object to the context
+        context['bus'] = bus
+
+        return context
+
+
+class RepairDetailView(CheckForRestriction, DetailView):
+    model = RepairSession
+    template_name = 'repairs/repair-detail.html'
+    context_object_name = 'repair_session'  # Make it clear that this is a RepairSession object
+
+    def get_context_data(self, **kwargs):
+        # Get the default context data
+        context = super().get_context_data(**kwargs)
+
+        # Get the current `RepairSession` object
+        repair_session = self.get_object()
+
+        # Add additional context
+        context['repair_session'] = repair_session
+        context['bus'] = repair_session.bus
+        context['modifications'] = repair_session.modifications.all()
+
+        # Add referer to the context
+        referer = self.request.META.get('HTTP_REFERER', None)
+        context['referer'] = referer if referer else reverse_lazy('bus_repairs', args=[repair_session.bus.id])
+
+        return context
