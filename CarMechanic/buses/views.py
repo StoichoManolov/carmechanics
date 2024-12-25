@@ -12,7 +12,7 @@ from CarMechanic.mixins import CheckForRestriction
 # Create your views here.
 
 
-class BusListView(CheckForRestriction, ListView):
+class BusListView(ListView):
 
     model = Bus
     template_name = 'buses/bus-list.html'
@@ -35,7 +35,7 @@ class BusListView(CheckForRestriction, ListView):
         return context
 
 
-class BusAddView(CheckForRestriction, CreateView):
+class BusAddView(CreateView):
 
     model = Bus
     form_class = BusForm
@@ -43,20 +43,20 @@ class BusAddView(CheckForRestriction, CreateView):
     success_url = reverse_lazy('bus_list')
 
 
-class BusDeleteView(CheckForRestriction, DeleteView):
+class BusDeleteView(DeleteView):
 
     model = Bus
     template_name = 'buses/delete-bus.html'
     success_url = reverse_lazy('bus_list')
 
 
-class BusDetailView(CheckForRestriction, DetailView):
+class BusDetailView(DetailView):
 
     model = Bus
     template_name = 'buses/detail-bus.html'
 
 
-class BusUpdateView(CheckForRestriction, UpdateView):
+class BusUpdateView(UpdateView):
 
     model = Bus
     template_name = 'buses/edit-bus.html'

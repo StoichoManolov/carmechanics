@@ -15,11 +15,9 @@ from docx.shared import Pt, Inches, RGBColor
 import os
 
 from CarMechanic.buses.models import Bus, Modifications
-from CarMechanic.mixins import CheckForRestriction
 from CarMechanic.repairs.models import RepairSession
 
 
-@login_required
 def generate_word_file(request):
     if request.method == 'POST':
         brand = request.POST.get('brand', '').strip()
@@ -143,7 +141,7 @@ def generate_word_file(request):
     return render(request, 'repairs/repairs.html')
 
 
-class BusRepairListView(CheckForRestriction, ListView):
+class BusRepairListView(ListView):
     model = RepairSession
     template_name = 'repairs/repair-list.html'
     context_object_name = 'repairs'  # This will be used in the template
@@ -169,7 +167,7 @@ class BusRepairListView(CheckForRestriction, ListView):
         return context
 
 
-class RepairDetailView(CheckForRestriction, DetailView):
+class RepairDetailView(DetailView):
     model = RepairSession
     template_name = 'repairs/repair-detail.html'
     context_object_name = 'repair_session'  # Make it clear that this is a RepairSession object
